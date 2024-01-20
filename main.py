@@ -10,24 +10,52 @@ FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
+reps = 0
+work_count = 0
 
 # ---------------------------- TIMER RESET ------------------------------- # 
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def start_timer():
-    count_down(300)
+    global reps
+    reps += 1
+    global work_count
+    if reps % 8 == 0:
+        label.config(text="Long Break", bg=RED)
+        window.config(bg=RED)
+        check_mark_row.config(bg=RED)
+        canvas.config(bg=RED)
+        count_down(LONG_BREAK_MIN*60)
+    elif reps % 2 == 0:
+        label.config(text="Short Break",bg=YELLOW)
+        window.config(bg=YELLOW)
+        check_mark_row.config(bg=YELLOW)
+        canvas.config(bg=YELLOW)
+        count_down(SHORT_BREAK_MIN*60)
+    else:
+        label.config(text="Work Time",bg=GREEN)
+        window.config(bg=GREEN)
+        check_mark_row.config(bg=GREEN,fg=RED)
+        canvas.config(bg=GREEN)
+        count_down(WORK_MIN*60)
+        work_count += 1
+
+
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(count):
     count_min = math.floor(count/60)
-    cound_seconds = count % 60
-    canvas.itemconfig(timer_text, text=f"{count_min}:{cound_seconds}")
+    count_seconds = count % 60
+    if count_seconds < 10:
+        count_seconds = f"0{count_seconds}"
+    canvas.itemconfig(timer_text, text=f"{count_min}:{count_seconds}")
     if count > 0:
         window.after(1000, count_down, count-1)
+    else:
+        start_timer()
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title("Pomodoro")
 window.config(padx=100, pady=50, bg=PINK)
-window.after(1000,)
 label = Label(text="Timer",font=(FONT_NAME, 40, "bold"), bg= PINK, fg=GREEN)
 label.grid(row=0, column=1)
 
