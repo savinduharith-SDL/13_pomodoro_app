@@ -7,17 +7,18 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 25
-SHORT_BREAK_MIN = 5
-LONG_BREAK_MIN = 20
+WORK_MIN = 0.3
+SHORT_BREAK_MIN = 0.1
+LONG_BREAK_MIN = 0.2
 reps = 0
-work_count = 0
+checkMarks = ""
 
 # ---------------------------- TIMER RESET ------------------------------- # 
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def start_timer():
     global reps
+    global checkMarks
     reps += 1
     global work_count
     if reps % 8 == 0:
@@ -33,12 +34,14 @@ def start_timer():
         canvas.config(bg=YELLOW)
         count_down(SHORT_BREAK_MIN*60)
     else:
-        label.config(text="Work Time",bg=GREEN)
+        label.config(text="Work Time", bg=GREEN)
         window.config(bg=GREEN)
-        check_mark_row.config(bg=GREEN,fg=RED)
+        check_mark_row.config(bg=GREEN, fg=RED)
         canvas.config(bg=GREEN)
         count_down(WORK_MIN*60)
-        work_count += 1
+        checkMarks = ''.join("✔" for mark in checkMarks)
+        checkMarks += "🔘"
+        check_mark_row.config(text=checkMarks)
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
@@ -52,6 +55,7 @@ def count_down(count):
         window.after(1000, count_down, count-1)
     else:
         start_timer()
+
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title("Pomodoro")
@@ -71,7 +75,7 @@ start_button.grid(row=2, column=0)
 reset_button = Button(text="Reset")
 reset_button.grid(row=2, column=2)
 
-check_mark_row = Label(text="✔ ✔ ✔ ✔ ✔", fg=GREEN, bg=PINK)
+check_mark_row = Label(text=checkMarks, fg=GREEN, bg=PINK)
 check_mark_row.config(pady=10, padx=20)
 check_mark_row.grid(row=3, column=1)
 
